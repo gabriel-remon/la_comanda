@@ -67,7 +67,7 @@ class indexRouter{
         $group->get('/{id}', \routerPedidos::class . ':TraerUno');
         
         $group->post('[/]', \routerPedidos::class . ':CargarUno')
-        ->add(\validarFormato::class . ':pedido');
+        ->add(\validarFormato::class . ':altaPedido');
 
         $group->put('/{id}', \routerPedidos::class . ':ModificarUno')
         ->add(\validarFormato::class . ':pedido');

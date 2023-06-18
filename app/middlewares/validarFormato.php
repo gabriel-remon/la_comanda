@@ -88,4 +88,32 @@ class validarFormato
         }
         return $res;
     }
+
+    public static function altaPedido($req, $handler)
+    {
+        $res = new ResponseMW();
+        $body = $req->getParsedBody();
+        
+        if(isset($body['numero_mesa'])){
+
+            $comanda = Mesa::obtenerMesa($body['numero_mesa'],true);
+            if($comanda){
+                if(isset($body['id_producto']) && Producto::exist($body['id_producto'])){
+                    $res = $handler->handle($req);
+                }else{
+                    $res->statusCode =404;
+                    $res->getBody()->write('el producto no existe');
+                    return $res;
+                }
+            }else{
+                $res->statusCode =404;
+                $res->getBody()->write('La mesa ingresada no se encuentra con una comanda activa');
+            }
+        }else{
+            $res->statusCode = 404;
+            $res->getBody()->write('no se encontro el numero de mesa como parametro "numero_mesa"');
+        }
+
+        return $res;
+    }
 }

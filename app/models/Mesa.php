@@ -87,7 +87,7 @@ class Mesa
         } else {
             $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM ".$_ENV['BD_MESAS']." WHERE id = :id");
             $consulta->bindValue(':id', $buscardor);
-        }
+        } 
 
         if ($consulta->execute()) {
 //            $retorno = $consulta->fetchObject();

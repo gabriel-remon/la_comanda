@@ -98,13 +98,13 @@ class Pedido
 
             $consulta->bindValue(':id_comanda',     $newPedido->id_comanda      ?$newPedido->id_producto    :$pedidoAnterior->id_producto);
             $consulta->bindValue(':id_producto',    $newPedido->id_producto     ?$newPedido->id_producto    :$pedidoAnterior->id_producto);;
-            $consulta->bindValue(':orden_recibida', $newPedido->orden_recibida  ?$newPedido->orden_recibida :$pedidoAnterior->orden_recibida);
             $consulta->bindValue(':estado',         $newPedido->estado          ?$newPedido->estado         :$pedidoAnterior->estado);
             $consulta->bindValue(':tiempo_estimado',$newPedido->tiempo_estimado ?$newPedido->tiempo_estimado:$pedidoAnterior->tiempo_estimado);
             $consulta->bindValue(':id_empleado',    $newPedido->id_empleado     ?$newPedido->id_empleado    :$pedidoAnterior->id_empleado);
             $consulta->bindValue(':orden_recibida', $newPedido->orden_recibida  ?$newPedido->orden_recibida :$pedidoAnterior->orden_recibida);
             $consulta->bindValue(':orden_entregada',$newPedido->orden_entregada ?$newPedido->orden_entregada:$pedidoAnterior->orden_entregada);
             $consulta->bindValue(':id', $newPedido->id);
+            
             $retotno = $consulta->execute();
         }
 
