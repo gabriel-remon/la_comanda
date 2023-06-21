@@ -7,13 +7,17 @@ class routerPedidos implements IApiUsable
     {
         try {
             $body = $req->getParsedBody();
+
             $comanda = Mesa::obtenerMesa($body['numero_mesa'], true);
-            $pedido = new Pedido($body['id_producto']);
-            $pedido->altaPedido($comanda->id);
-            $res->setStatusCode(200);
-            $res->getBody()->write(json_encode($pedido));
+            if($comanda){
+                $pedido = new Pedido($body['id_producto']);
+                
+                $pedido->altaPedido($comanda->id);
+                $res->withStatus(200);
+                $res->getBody()->write(json_encode($pedido));
+            }
         } catch (Exception $err) {
-            $res->setStatusCode(500);
+            $res->withStatus(500);
             $res->getBody()->write(json_encode($err));
         }
         return $res;

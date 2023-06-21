@@ -13,7 +13,6 @@ class routerUsuarios implements IApiUsable
         $new->nombre = $body['nombre'];
         $new->fecha_nacimiento = new DateTime($body['fecha_nacimiento']);
         $new->sector = $body['sector'];
-        $new->estado = $body['estado'];
     
         $newId = $new->crearUsuario();
         if(isset($newId)){

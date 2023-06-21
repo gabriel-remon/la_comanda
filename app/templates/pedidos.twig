@@ -1,0 +1,37 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+
+    <p> Lista de pedidos</p>
+
+    <div class="product-list">
+       
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>id Comanda</th>
+                <th>descripcion</th>
+                <th>sector</th>
+                <th>estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for element in data %}
+                <tr class="product-row" idelement={{element.id}}>
+                    <td>{{ element.descripcion }}</td>
+                    <td>{{ element.sector }}</td>
+                    <td>{{ element.precio }}</td>
+                    <td>
+                        {% if element.estado == 0 %}
+                            <span class="product-status">No Disponible</span>
+                        {% else %}
+                            <span class="product-status available">Disponible</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+{% endblock %}

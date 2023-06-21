@@ -47,7 +47,7 @@ class Usuario
         $retorno = null;
         $usuario = Usuario::obtenerUsuario($this->email);
 
-        if ($usuario === false) {
+        if (!isset($usuario)) {
             $objAccesoDatos = AccesoDatos::obtenerInstancia();
             $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO " . $_ENV['BD_USUARIOS'] . " (email, password,nombre,fecha_nacimiento,sector,estado)
             VALUES (:email, :password, :nombre, :fecha_nacimiento, :sector, :estado)");
@@ -58,7 +58,7 @@ class Usuario
             $consulta->bindValue(':fecha_nacimiento', $this->fecha_nacimiento->format('Y-m-d'));
 
             $consulta->bindValue(':sector', $this->sector);
-            $consulta->bindValue(':estado',  $this->estado, PDo::PARAM_BOOL);
+            $consulta->bindValue(':estado',  true, PDo::PARAM_BOOL);
 
             $consulta->execute();
             $retorno = $objAccesoDatos->obtenerUltimoId();
@@ -98,6 +98,9 @@ class Usuario
         //$consulta->execute();
         if ($consulta->execute()) {
             $retorno = $consulta->fetchObject('Usuario');
+            if($retorno === false){
+                $retorno = null;
+            }
         } else {
             $retorno = null;
         }
@@ -136,7 +139,7 @@ class Usuario
             $consulta->bindValue(':nombre', $newUser->nombre);
             $consulta->bindValue(':fecha_nacimiento', $newUser->fecha_nacimiento->format('Y-m-d'));
             $consulta->bindValue(':sector', $newUser->sector);
-            $consulta->bindValue(':estado',  $newUser->estado);
+            $consulta->bindValue(':estado',  $newUser->estado == "true"?true:false);
             $consulta->bindValue(':id',  $retorno->id);
             $retorno = $consulta->execute();
         }

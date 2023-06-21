@@ -95,9 +95,9 @@ class validarFormato
         $body = $req->getParsedBody();
         
         if(isset($body['numero_mesa'])){
-
             $comanda = Mesa::obtenerMesa($body['numero_mesa'],true);
             if($comanda){
+                
                 if(isset($body['id_producto']) && Producto::exist($body['id_producto'])){
                     $res = $handler->handle($req);
                 }else{

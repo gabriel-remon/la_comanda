@@ -43,7 +43,8 @@ class Producto
             $consulta->bindValue(':descripcion', $this->descripcion);
             $consulta->bindValue(':sector', $this->sector);
             $consulta->bindValue(':precio', $this->precio);
-            $consulta->bindValue(':estado',  $this->estado);
+
+            $consulta->bindValue(':estado', true);
             $consulta->execute();
             $retorno = $objAccesoDatos->obtenerUltimoId();
         }
@@ -81,6 +82,7 @@ class Producto
         //$consulta->execute();
         if ($consulta->execute()) {
             $retorno = $consulta->fetchObject('Producto');
+        
         } else {
             $retorno = null;
         }
@@ -109,18 +111,35 @@ class Producto
         return $retorno;
     }
 
+    /**
+     * -1 no existe el producto
+     * -2 el producto ya esta dado de baja
+     * -3 error en el server
+     * mayor 0  - el producto fue dado de baja
+     *
+     * @param [type] $id
+     * @return int
+     */
     public static function borrarProducto($id)
     {
-        $retorno = false;
         $producto = Producto::obtenerProducto($id);
-        if ($producto && $producto->estado) {
+        if(!$producto){
+            $retorno = -1;
+            return $retorno;
+    }
+        if(!$producto->estado){
+            $retorno = -2;
+            return $retorno;
+    }
+
+        if ( $producto->estado) {
             $objAccesoDato = AccesoDatos::obtenerInstancia();
             $consulta = $objAccesoDato->prepararConsulta("UPDATE " . $_ENV['BD_PRODUCTOS'] . "
                                                          SET estado = false WHERE id = :id");
             //$fecha = new DateTime(date("d-m-Y"));
             $consulta->bindValue(':id', $id);
             //$consulta->bindValue(':fechaBaja', date_format($fecha, 'Y-m-d H:i:s'));
-            $retorno = $consulta->execute();
+            $consulta->execute()? $retorno= $id: $retorno=-3;
         }
 
         return $retorno;
@@ -149,8 +168,7 @@ class Producto
 
 
         $objAccesoDato = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDato->prepararConsulta("SELECT id " . $_ENV['BD_PRODUCTOS'] . " 
-                                                            WHERE id = :id");
+        $consulta = $objAccesoDato->prepararConsulta("SELECT id from " . $_ENV['BD_PRODUCTOS'] . " WHERE id = :id");
         $consulta->bindValue(':id', $id);
         $consulta->execute();
         $retorno = $consulta->fetchObject('Producto');

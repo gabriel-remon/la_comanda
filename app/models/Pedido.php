@@ -2,6 +2,7 @@
 
 include_once __DIR__."/../utils/AccesoDatos.php";
 include_once __DIR__."/Usuario.php";
+include_once __DIR__."/Producto.php";
 
 class Pedido
 {
@@ -16,6 +17,9 @@ class Pedido
 
     function __construct($id_producto, $orden_recibida = null)
     {
+        if(!Producto::exist($id_producto))
+             throw new Exception("El producto ingresado no se encuentra en la base de datos");
+            
         $this->id_producto = $id_producto;
         $this->orden_recibida = $orden_recibida ? date($orden_recibida) : date("Y-m-d H:i:s");
     }
@@ -43,11 +47,11 @@ class Pedido
     public function altaPedido($id_comanda)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO ".$_ENV['BD_PEDIDOS']." (id_comanda, id_producto,orden_recibida, estado) VALUES 
+        var_dump($id_comanda);
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO ".$_ENV['BD_PEDIDOS']." (id_comanda, id_producto,orden_recibida, estado)  
                                                         VALUES (:id_comanda, :id_producto,:orden_recibida, :estado) ");
         $consulta->bindValue(':id_comanda', $id_comanda);
-        $consulta->bindValue(':id_producto', $this->id_producto);;
+        $consulta->bindValue(':id_producto', $this->id_producto);
         $consulta->bindValue(':orden_recibida', $this->orden_recibida);
         $consulta->bindValue(':estado', 'pendiente');
         if ($consulta->execute()) {

@@ -81,9 +81,9 @@ class Mesa
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         if ($opcion) {
-            $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM ".$_ENV['BD_MESAS']." WHERE numero_mesa = :numero_mesa AND estado = :estado");
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM ".$_ENV['BD_MESAS']." WHERE numero_mesa = :numero_mesa AND estado <> :estado");
             $consulta->bindValue(':numero_mesa', $buscardor);
-            $consulta->bindValue(':estado', "activa");
+            $consulta->bindValue(':estado', "cerrada");
         } else {
             $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM ".$_ENV['BD_MESAS']." WHERE id = :id");
             $consulta->bindValue(':id', $buscardor);
@@ -118,9 +118,9 @@ class Mesa
             $objAccesoDato = AccesoDatos::obtenerInstancia();
             $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_MESAS']." 
                                                         SET nombre_cliente = :nombre_cliente, 
-                                                        numero_mesa = :numero_mesa 
-                                                        password = :password 
-                                                        estado = :estado 
+                                                        numero_mesa = :numero_mesa ,
+                                                        password = :password ,
+                                                        estado = :estado ,
                                                         id_encuesta = :id_encuesta 
                                                         WHERE id = :id");
             $consulta->bindValue(':nombre_cliente', $newMesa->nombre_cliente, PDO::PARAM_STR);

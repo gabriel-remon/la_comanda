@@ -5,13 +5,13 @@ use Slim\Handlers\Strategies\RequestHandler;
 error_reporting(-1);
 ini_set('display_errors', 1);
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Psr7\Response as ResponseMW;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\RequestHandlerInterface;
+//use Psr\Http\Message\ResponseInterface as Response;
+//use Slim\Psr7\Response as ResponseMW;
+//use Psr\Http\Message\ServerRequestInterface as Request;
+//use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Factory\AppFactory;
-use Slim\Routing\RouteCollectorProxy;
-use Slim\Routing\RouteContext;
+//use Slim\Routing\RouteCollectorProxy;
+//use Slim\Routing\RouteContext;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -36,29 +36,17 @@ $app->addErrorMiddleware(true, true, true);
 // Add parse body
 $app->addBodyParsingMiddleware();
 
-// Routes
-/*
-function indexRouter ($group) {
-    // Aquí se definen las rutas dentro del grupo
-    $group->get('/ruta1', function ($request, $response) {
-        // Lógica para la ruta '/prefix/ruta1'
-         $response->getBody()->write('Ruta 1');
-         return $response;
-    });
-}
-*/
-$app->group('', \indexRouter::class );
-/*
-$app->group('', function  ($group) {
-    // Aquí se definen las rutas dentro del grupo
-    $group->get('/ruta1', function ($request, $response) {
-        // Lógica para la ruta '/prefix/ruta1'
-         $response->getBody()->write('Ruta 1');
-         return $response;
-    });
-});*/
+//motor de plantillas  twig
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__.'/templates');
+$twig = new \Twig\Environment($loader);
 
-//$router = new indexRouter();
-//$router($app);
+//echo $twig->render('hija.twig');
+$app->add(function ($request, $handler) use ($twig) {
+    $request = $request->withAttribute('view', $twig);
+    $response = $handler->handle($request);
+    return $response;
+});
+// Routes
+$app->group('', \indexRouter::class );
 
 $app->run();

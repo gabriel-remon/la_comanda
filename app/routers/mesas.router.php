@@ -11,7 +11,12 @@ class routerMesas implements IApiUsable
         $new = new Mesa($body['nombre_cliente'], $body['numero_mesa']);
     
         $newId = $new->altaMesa();
-        $res->getBody()->write('nueva mesa creada, id: '.$newId);
+        if( $newId > -1 ){
+            $res->getBody()->write('nueva comanda creada, id: '.$newId.'password: '.$new->password);
+        }else{
+            $res->getBody()->write('no se creo la comanda');
+            
+        }
         return $res;
     }
 

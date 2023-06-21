@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.product-table th, .product-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+.product-row:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.product-status {
+    font-weight: bold;
+    color: red;
+}
+
+.product-status.available {
+    color: green;
+}

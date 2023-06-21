@@ -12,6 +12,13 @@ class indexRouter{
     function __invoke($app) {
     // Aquí se definen las rutas dentro del grupo
     $app->group('[/]', function ($group) {
+    /*
+        $group->get('[/]', function ($request, $response, $args)
+        {
+            $view = $request->getAttribute('view');
+            return $view->render($response, 'indez.twig', []);
+        });
+   */
     });
     
     
@@ -73,10 +80,7 @@ class indexRouter{
         ->add(\validarFormato::class . ':pedido');
 
         $group->delete('/{id}', \routerPedidos::class . ':BorrarUno');
-    })->add(function($req,$handler){
-        $res = $handler->handle($req);
-        $res->getBody()->write(' - pedidos');
-        return $res;
+    
     });
     
 }
