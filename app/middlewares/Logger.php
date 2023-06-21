@@ -1,8 +1,11 @@
 <?php
 
+include_once __DIR__.'//utils/jwtController.php';
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Psr7\Response as ResponseMW;
+use Firebase\JWT\JWT;
 
 class Logger
 {
@@ -52,5 +55,28 @@ class Logger
     {
         $retorno = $next($request, $response);
         return $retorno;
+    }
+
+
+    public static function validarUsuariofunction ($request, $handler) {
+        $authHeader = $request->getHeaderLine('Authorization');
+    
+        if (!$authHeader) {
+            $response = new ResponseMW();
+            $response->getBody()->write('no hay un jwt guardado');
+            return $response->withStatus(401);
+        }
+    
+        list($token) = sscanf($authHeader, 'Bearer %s');
+        try{
+            $tokenVerificado =  ControlerJWT::VerificarToken($token);
+            
+        }catch (\Exception $e) {
+            $response = new ResponseMW();
+            $response->getBody()->write('Invalid token');
+            return $response->withStatus(401);
+        }
+    
+        return $handler->handle($request);
     }
 }

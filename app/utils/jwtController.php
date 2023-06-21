@@ -2,7 +2,7 @@
 
 use Firebase\JWT\JWT;
 
-class AutentificadorJWT
+class ControlerJWT
 {
     private static $claveSecreta = 'c63b4736368eb57bd707e47d5ad50b050b773012b0bacc88f494e67e9deef0af26b9198f436f279f445c101b2f55a07b662f9cd1b415c5205afd86c7b1b4d8ec';
     private static $tipoEncriptacion = ['HS256'];
