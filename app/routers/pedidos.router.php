@@ -33,8 +33,12 @@ class routerPedidos implements IApiUsable
 
     public function TraerTodos($req, $res, $args)
     {
-        $productos = Pedido::obtenerTodos();
-
+        $dataJwt = $req->getAttribute('jwt');
+        if($dataJwt->sector == 'cliente'){
+            $productos = Pedido::obtenerPedidoComanda($dataJwt->id);
+        }else{
+            $productos = Pedido::obtenerTodosPorSector($dataJwt->sector);
+        }
         $res->getBody()->write(json_encode($productos));
         return $res;
     }

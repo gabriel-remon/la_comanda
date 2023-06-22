@@ -1,0 +1,15 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+
+        <h1>Bienvenido</h1>
+     <div class="container">
+        <h2>Por favor elija su rol:</h2>
+        <div class="button-container">
+            <button onclick="window.location.href='/usuarios/login/empleados'">empleado</button>
+            <button onclick="window.location.href='/usuarios/login/clientes'">Cliente</button>
+        </div>
+    </div>
+
+
+{% endblock %}

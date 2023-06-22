@@ -1,6 +1,7 @@
 <?php
 include_once __DIR__.'/../interfaces/IApiUsable.php';
 include_once __DIR__.'/../models/Usuario.php';
+include_once __DIR__.'/../utils/jwtController.php';
 
 class routerUsuarios implements IApiUsable
 { public function CargarUno($req, $res, $args)
@@ -26,16 +27,22 @@ class routerUsuarios implements IApiUsable
     public function TraerUno($req, $res, $args)
     {
         $body = $req->getParsedBody();
-
+       
         $usuario = Usuario::validarUsuario($body['email'],$body['password']);
         //var_dump($usuario);
-        if(isset($usuario)){
-            $res->getBody()->write(json_encode($usuario));
+        if(isset($usuario) && $usuario->estado){
+            $token = ['id'=> $usuario->id, 
+                      'sector'=>$usuario->sector, 
+                      'email'=>$usuario->email];
+            $res->getBody()->write(json_encode(['jwt'=>ControlerJWT::CrearToken($token)]));
+            $res= $res->withStatus(200) ;
         }else{
+            $res= $res->withStatus(400) ;
             $res->getBody()->write('usuario o password incorrectos');
         }
         return $res;
     }
+    
 
     public function TraerTodos($req, $res, $args)
     {

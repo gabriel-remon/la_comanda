@@ -12,7 +12,7 @@ class ControlerJWT
         $ahora = time();
         $payload = array(
             'iat' => $ahora,
-            'exp' => $ahora + (60000),
+            //'exp' => $ahora + (60000),
             'aud' => self::Aud(),
             'data' => $datos,
             'app' => "Test JWT"
@@ -23,13 +23,14 @@ class ControlerJWT
     public static function VerificarToken($token)
     {
         try {
-            $decodificado = AutentificadorJWT::ObtenerPayLoad($token);
+            $decodificado = ControlerJWT::ObtenerPayLoad($token);
             if ($decodificado->aud !== self::Aud()) {
                 throw new Exception("No es el usuario valido");
             }
         } catch (Exception $e) {
             throw $e;
         }
+        
         
         return $decodificado->data;
     }

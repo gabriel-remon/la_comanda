@@ -40,7 +40,7 @@ $app->addBodyParsingMiddleware();
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__.'/templates');
 $twig = new \Twig\Environment($loader);
 
-//echo $twig->render('hija.twig');
+//agrego la clase de twig a todas las request como atributo 'view'
 $app->add(function ($request, $handler) use ($twig) {
     $request = $request->withAttribute('view', $twig);
     $response = $handler->handle($request);

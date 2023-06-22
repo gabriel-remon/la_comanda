@@ -43,7 +43,6 @@ class Producto
             $consulta->bindValue(':descripcion', $this->descripcion);
             $consulta->bindValue(':sector', $this->sector);
             $consulta->bindValue(':precio', $this->precio);
-
             $consulta->bindValue(':estado', true);
             $consulta->execute();
             $retorno = $objAccesoDatos->obtenerUltimoId();

@@ -15,9 +15,9 @@ class Pedido
     public $orden_recibida;
     public $orden_entregada;
 
-    function __construct($id_producto, $orden_recibida = null)
+    function __construct($id_producto = null, $orden_recibida = null)
     {
-        if(!Producto::exist($id_producto))
+        if(isset($id_producto) && !Producto::exist($id_producto))
              throw new Exception("El producto ingresado no se encuentra en la base de datos");
             
         $this->id_producto = $id_producto;
@@ -47,7 +47,6 @@ class Pedido
     public function altaPedido($id_comanda)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        var_dump($id_comanda);
         $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO ".$_ENV['BD_PEDIDOS']." (id_comanda, id_producto,orden_recibida, estado)  
                                                         VALUES (:id_comanda, :id_producto,:orden_recibida, :estado) ");
         $consulta->bindValue(':id_comanda', $id_comanda);
@@ -56,6 +55,9 @@ class Pedido
         $consulta->bindValue(':estado', 'pendiente');
         if ($consulta->execute()) {
             $retorno = $objAccesoDatos->obtenerUltimoId();
+            $this->id = $retorno;
+            $this->id_comanda = $id_comanda;
+            $this->estado = 'pendiente';
         } else {
             $retorno = null;
         }
@@ -72,6 +74,43 @@ class Pedido
 
         return $data;
     }
+    public static function obtenerTodosPorSector($sector, $pendiente = true)
+    {
+       
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        if($sector == 'admin'){
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM ".$_ENV['BD_PEDIDOS']);
+        }else if($pendiente){
+            //$consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM ".$_ENV['BD_PEDIDOS']." where sector = :sector and estado = pendiente");
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.* FROM ".$_ENV['BD_PEDIDOS'].
+            " JOIN ".$_ENV['BD_PRODUCTOS']." ON ".$_ENV['BD_PEDIDOS'].".id_producto = ".$_ENV['BD_PRODUCTOS'].".id 
+            WHERE ".$_ENV['BD_PRODUCTOS'].".sector = :sector AND ".$_ENV['BD_PEDIDOS'].".estado = :estado");
+            
+            $consulta->bindValue(':sector', $sector);
+            $consulta->bindValue(':estado', 'pendiente');
+        }else{
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.* FROM ".$_ENV['BD_PEDIDOS'].
+                                                        "JOIN ".$_ENV['BD_PRODUCTOS']." ON ".$_ENV['BD_PEDIDOS'].".id_producto = ".$_ENV['BD_PRODUCTOS'].".id 
+                                                        where ".$_ENV['BD_PRODUCTOS'].".sector = :sector");
+            $consulta->bindValue(':sector', $sector);
+        }
+
+        $consulta->execute();
+        $data = $consulta->fetchAll(PDO::FETCH_CLASS, "Pedido");
+
+        return $data;
+    }
+    public static function obtenerPedidoComanda($id_comanda)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM ".$_ENV['BD_PEDIDOS']." WHERE id_comanda = :id_comanda");
+        $consulta->bindValue(':id_comanda', $id_comanda,);
+        $consulta->execute();
+
+        return $consulta->fetchAll(PDO::FETCH_CLASS,'Pedido');
+    }
+
 
     public static function obtenerPedido($id)
     {

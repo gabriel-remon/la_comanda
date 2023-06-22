@@ -95,7 +95,6 @@ class Mesa
             if($data === false ){
                 $retorno=null;
             }else{
-
                 $retorno = new Mesa($data->nombre_cliente,$data->numero_mesa);
                 $retorno->password = $data->password;
                 $retorno->estado = $data->estado;
@@ -144,5 +143,19 @@ class Mesa
         $consulta->bindValue(':id', $id, PDO::PARAM_INT);
         $consulta->bindValue(':estado', "cancelada");
         return $consulta->execute();
+    }
+
+    public static function validarMesa($numeroMesa, $password)
+    {
+
+        $retorno = Mesa::obtenerMesa($numeroMesa,true);
+        if (isset($retorno)) {
+
+            if ($password != $retorno->password) {
+                $retorno = null;
+            }
+        }
+
+        return $retorno;
     }
 }

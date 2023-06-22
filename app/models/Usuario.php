@@ -79,6 +79,7 @@ class Usuario
         $retorno = [];
         foreach ($data as $element) {
             $usuario = new Usuario();
+            $usuario->id = $element['id'];
             $usuario->email = $element['email'];
             $usuario->nombre = $element['nombre'];
             $usuario->fecha_nacimiento = $element['fecha_nacimiento'];

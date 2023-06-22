@@ -9,20 +9,22 @@
     <table class="product-table">
         <thead>
             <tr>
-                <th>Descripción</th>
-                <th>Sector</th>
-                <th>Precio</th>
+                <th>email</th>
+                <th>nombre</th>
+                <th>Edad</th>
+                <th>sector</th>
                 <th>Estado</th>
             </tr>
         </thead>
         <tbody>
-            {% for producto in data %}
-                <tr class="product-row" idProducto={{producto.id}}>
-                    <td>{{ producto.descripcion }}</td>
-                    <td>{{ producto.sector }}</td>
-                    <td>{{ producto.precio }}</td>
+            {% for element in data %}
+                <tr class="product-row" idProducto={{element.id}}>
+                    <td>{{ element.email }}</td>
+                    <td>{{ element.nombre }}</td>
+                    <td>{{ element.Edad }}</td>
+                    <td>{{ element.sector }}</td>
                     <td>
-                        {% if producto.estado == 0 %}
+                        {% if element.estado == 0 %}
                             <span class="product-status">No Disponible</span>
                         {% else %}
                             <span class="product-status available">Disponible</span>
