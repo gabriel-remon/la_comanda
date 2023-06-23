@@ -38,7 +38,9 @@ class routerMesas implements IApiUsable
                 'sector' => 'cliente',
                 'numero_mesa' => $mesa->numero_mesa
             ];
-            $res->getBody()->write(json_encode(['jwt' => ControlerJWT::CrearToken($token)]));
+            $jwt =ControlerJWT::CrearToken($token);
+            $res = $res->withHeader('Set-Cookie', 'jwt=' . $jwt . '; path=/; HttpOnly; Secure; SameSite=Strict');
+            $res->getBody()->write('acceso consedido');
             $res= $res->withStatus(200) ;
         } else {
            $res= $res->withStatus(400) ;

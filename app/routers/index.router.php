@@ -28,6 +28,10 @@ class indexRouter{
         
         //$group->get('[/]', \ViewRouter::class . ':usuarios');
         $group->get('[/]', \routerUsuarios::class . ':TraerTodos')
+        ->add(\ViewRouter::class.':mostrarUsuarios')
+        ->add(\Logger::validarRoles(['admin']))
+        ->add(\Logger::class.':validarJWTUsuario');// creo que se puede juntar con validarRoles
+        $group->post('/api[/]', \routerUsuarios::class . ':TraerTodos')
         ->add(\Logger::validarRoles(['admin']))
         ->add(\Logger::class.':validarJWTUsuario');// creo que se puede juntar con validarRoles
         
@@ -36,6 +40,8 @@ class indexRouter{
         $group->post('/login/empleados', \routerUsuarios::class . ':TraerUno');
         $group->get('/login/clientes', \ViewRouter::class . ':loginClientes');
         $group->post('/login/clientes', \routerMesas::class . ':loginCliente');
+        $group->get('/logout', \ViewRouter::class . ':logout');
+        $group->post('/logout', \routerUsuarios::class . ':logout');
         
         $group->post('/singup', \routerUsuarios::class . ':CargarUno')
         ->add(\validarFormato::class . ':usuario')
@@ -96,17 +102,23 @@ class indexRouter{
 
     $app->group('/pedidos', function ($group){
         $group->get('[/]', \routerPedidos::class . ':TraerTodos')
+        ->add(\ViewRouter::class.':pedidos')
+        ->add(\Logger::class.':validarJWTUsuario');
+        $group->post('/api', \routerPedidos::class . ':TraerTodos')
         ->add(\Logger::class.':validarJWTUsuario');
 
         $group->get('/{id}', \routerPedidos::class . ':TraerUno');
         
         $group->post('[/]', \routerPedidos::class . ':CargarUno')
         ->add(\validarFormato::class . ':altaPedido');
-
+        
         $group->put('/{id}', \routerPedidos::class . ':ModificarUno')
         ->add(\validarFormato::class . ':pedido');
-
+        
         $group->delete('/{id}', \routerPedidos::class . ':BorrarUno');
+        $group->post('/preparar', \routerPedidos::class . ':preparar')
+        ->add(\validarFormato::class . ':prepararPedido')
+        ->add(\Logger::class.':validarJWTUsuario');
     
     });
     

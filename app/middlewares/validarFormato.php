@@ -116,4 +116,42 @@ class validarFormato
 
         return $res;
     }
+
+    public static function prepararPedido($req, $handler)
+    {
+        $res = new ResponseMW();
+        $body = $req->getParsedBody();
+
+        if(!isset($body['id_pedido'])){
+            $error = 'No se encontro el parametro "id_pedido"';
+            $statusError = 404;
+            $res->getBody()->write($error);
+            $res->withStatus($statusError);
+            return $res;
+        }
+
+        $pedido = Pedido::obtenerPedido($body['id_pedido']);
+            
+        if(!isset($pedido)){
+            $error = 'El pedido no esta guardado en la lista de pedidos';
+            $statusError = 500;
+            $res->getBody()->write($error);
+            $res->withStatus($statusError);
+            return $res;
+        }
+
+        if($pedido->estado == 'pendiente' && !isset($body['tiempo_estimado'])){
+            $error = 'No se encontro el parametro "tiempo_estimado"';
+            $statusError = 404;
+            $res->getBody()->write($error);
+            $res->withStatus($statusError);
+            return $res;
+        }
+        
+        
+            
+            $res = $handler->handle($req);
+        
+        return $res;
+    }
 }

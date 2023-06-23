@@ -36,6 +36,7 @@ class routerProductos implements IApiUsable
         
         //$res->getBody()->write(json_encode($productos));
         $res->getBody()->write($view->render('productos.twig',['data'=>$productos]));
+        
         return $res;
     }
     

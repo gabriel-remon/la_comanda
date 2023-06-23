@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <p> Lista de Productos</p>
+    <p> Lista de Usuarios</p>
 
     <div class="product-list">
        
@@ -21,7 +21,7 @@
                 <tr class="product-row" idProducto={{element.id}}>
                     <td>{{ element.email }}</td>
                     <td>{{ element.nombre }}</td>
-                    <td>{{ element.Edad }}</td>
+                    <td>{{ element.edad }} años</td>
                     <td>{{ element.sector }}</td>
                     <td>
                         {% if element.estado == 0 %}

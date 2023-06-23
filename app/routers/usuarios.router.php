@@ -34,8 +34,11 @@ class routerUsuarios implements IApiUsable
             $token = ['id'=> $usuario->id, 
                       'sector'=>$usuario->sector, 
                       'email'=>$usuario->email];
-            $res->getBody()->write(json_encode(['jwt'=>ControlerJWT::CrearToken($token)]));
+                      $jwt =ControlerJWT::CrearToken($token);
+                      $res = $res->withHeader('Set-Cookie', 'jwt=' . $jwt . '; path=/; HttpOnly; Secure; SameSite=Strict');
+                      $res->getBody()->write("Bienvenido ". $usuario->nombre);
             $res= $res->withStatus(200) ;
+            
         }else{
             $res= $res->withStatus(400) ;
             $res->getBody()->write('usuario o password incorrectos');
@@ -74,6 +77,18 @@ class routerUsuarios implements IApiUsable
         $body = $req->getParsedBody();
         $eliminado = Usuario::borrarUsuario($body['email']);
         $res->getBody()->write($eliminado?'usuario eliminado':'no se pudo eliminar' );
+        return $res;
+    }
+    public function logout($req, $res, $args)
+    {try{
+        $res = $res->withHeader('Set-Cookie', 'jwt=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; HttpOnly; Secure; SameSite=Strict');
+        $res->getBody()->write('Usuario deslogado');
+        $res= $res->withStatus(200) ;
+    }catch(Exception $e){
+        $res->getBody()->write('Error: '.$e->getMessage());
+        $res= $res->withStatus(500) ;
+
+    }
         return $res;
     }
 }

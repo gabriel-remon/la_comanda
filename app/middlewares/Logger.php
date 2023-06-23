@@ -17,6 +17,7 @@ class Logger
 
     public static function verificarCredencial($req, $handler)
     {
+        
         //$res = $handler->handle($req)
         $body = $req->getParsedBody();
         $res = new ResponseMW();
@@ -60,15 +61,58 @@ class Logger
 
     public static function validarJWTUsuario ($request, $handler) {
         
-        $authHeader = $request->getHeaderLine('Authorization');
+        $cookies = $request->getCookieParams();
+        $token = $cookies['jwt'] ?? null;
+        $error = null;
+        $statusError = 500;
+        $response = new ResponseMW();
+        //var_dump($jwt);
+        //var_dump('hola');
+        //$authHeader = $request->getHeaderLine('Authorization');
     
-        if (!$authHeader) {
+        if (!$token) {
+            $error ='no hay un jwt guardado';
+            $statusError = 401;
+        }
+    
+        //list($token) = sscanf($authHeader, 'Bearer %s');
+        try{
+            $tokenVerificado =  ControlerJWT::VerificarToken($token);
+            $request = $request->withAttribute('jwt', $tokenVerificado);
+            $response = $handler->handle($request);
+           
+        }catch (\Exception $e) {
+            
+            $error =$e->getMessage();
+            $statusError =401;
+        }
+    
+        if(isset($error)){
+            $view = $request->getAttribute('view');
+            $response->getBody()->write($view->render('error.twig',['data'=>$error]));
+            $response->withStatus($statusError);
+        }
+
+        return $response;
+    }
+    /*
+    public static function validarJWTUsuario ($request, $handler) {
+        
+        $cookies = $request->getCookieParams();
+        $token = $cookies['jwt'] ?? null;
+        $error = null;
+        $statusError = 500;
+        //var_dump($jwt);
+        //var_dump('hola');
+        //$authHeader = $request->getHeaderLine('Authorization');
+    
+        if (!$token) {
             $response = new ResponseMW();
             $response->getBody()->write('no hay un jwt guardado');
             return $response->withStatus(401);
         }
     
-        list($token) = sscanf($authHeader, 'Bearer %s');
+        //list($token) = sscanf($authHeader, 'Bearer %s');
         try{
             $tokenVerificado =  ControlerJWT::VerificarToken($token);
             $request = $request->withAttribute('jwt', $tokenVerificado);
@@ -81,8 +125,14 @@ class Logger
             return $response->withStatus(401);
         }
     
+        if(isset($error)){
+            $view = $req->getAttribute('view');
+            $res->getBody()->write($view->render('error.twig',['data'=>$error]));
+            $res->withStatus($statusError);
+        }
+
         return $response;
-    }
+    }*/
     public static function validarMesero ($request, $handler) {
         $dataJwt = $request->getAttribute('jwt');
     
@@ -122,20 +172,30 @@ class Logger
     public static function validarRoles($rolesPermitidos) {
         return function ($request, $handler) use ($rolesPermitidos) {
             $dataJwt = $request->getAttribute('jwt');
-        
+            $error = null;
+            $statusError = 500;
+            $response = new ResponseMW();
+
             if (!$dataJwt) {
-                $response = new ResponseMW();
-                $response->getBody()->write('no hay un jwt guardado');
-                return $response->withStatus(401);
+                $error ='no hay un jwt guardado';
+                $statusError = 401;
             }
             
             if (!in_array($dataJwt->sector, $rolesPermitidos)) {
-                $response = new ResponseMW();
-                $response->getBody()->write('no cuenta con permisos para ingresar');
-                return $response->withStatus(404);
+                $error ='no cuenta con permisos para ingresar';
+                $statusError = 404;
             }
+
+            if(isset($error)){
+                $view = $request->getAttribute('view');
+                $response->getBody()->write($view->render('error.twig',['data'=>$error]));
+                $response->withStatus($statusError);
+            }else{
+                $response = $handler->handle($request);
+            }
+    
         
-            return $handler->handle($request);
+            return $response;
         };
     }
     

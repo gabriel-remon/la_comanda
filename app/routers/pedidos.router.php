@@ -63,8 +63,33 @@ class routerPedidos implements IApiUsable
 
     public function BorrarUno($req, $res, $args)
     {
+        
         $idProduct = Mesa::borrarMesa($args['id']);
         $res->getBody()->write('mesa eliminado con exito id: '.$idProduct);
+        return $res;
+    }
+    public function preparar($req, $res, $args)
+    {
+        
+        try{
+            $body = $req->getParsedBody();
+            $dataJwt = $req->getAttribute('jwt');
+            $pedido = Pedido::obtenerPedido($body['id_pedido']);
+            if ($pedido->estado == 'pendiente')
+                Pedido::cargarEmpleado($body['id_pedido'],$dataJwt->id,$body['tiempo_estimado'],$dataJwt->sector);
+            else 
+                Pedido::cambioEstado($body['id_pedido']);
+            
+
+            //if ($pedido->estado == 'pendiente' && $dataJwt->sector ==)
+
+            $res->getBody()->write('pedido modificado');
+            $res->withStatus(200);
+        }catch(Exception $e){
+            $res->getBody()->write($e->getMessage());
+            $res->withStatus(500);
+        }
+
         return $res;
     }
 }
