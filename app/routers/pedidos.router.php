@@ -114,6 +114,7 @@ class routerPedidos implements IApiUsable
                     break;
                 case 'listo para servir':
                     Pedido::pedidoEntregado($body['id_pedido'], $dataJwt->sector);
+                    Mesa::ClienteComiendo( $pedido->id_comanda); //cambia el estado de la comanda si el cliente tiene todos tus pedidos
                     $mesage ='Se entrego el pedido';
                     $statusMensage = 200;
                     break;

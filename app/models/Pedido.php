@@ -327,15 +327,15 @@ class Pedido
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $data = [];
-        if($sector == 'cliente'){
-            $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.*,".$_ENV['BD_PRODUCTOS'].".sector,".$_ENV['BD_PRODUCTOS'].".descripcion FROM ".$_ENV['BD_PEDIDOS'].
+       /// if($sector == 'cliente'){
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.*,".$_ENV['BD_PRODUCTOS'].".precio,".$_ENV['BD_PRODUCTOS'].".sector,".$_ENV['BD_PRODUCTOS'].".descripcion FROM ".$_ENV['BD_PEDIDOS'].
             " JOIN ".$_ENV['BD_PRODUCTOS']." ON ".$_ENV['BD_PEDIDOS'].".id_producto = ".$_ENV['BD_PRODUCTOS'].".id
             WHERE ".$_ENV['BD_PEDIDOS'].".id_comanda = :id_comanda
             ");
             $consulta->bindValue(':id_comanda', $id_comanda);
             $consulta->execute();
             $data = $consulta->fetchAll();
-        }
+       // }
         return $data;
     }
 }

@@ -44,7 +44,31 @@ h1 {
     text-align: center;
     margin-top: 50px;
 }
-
+h2 {
+    color: #333;
+    text-align: center;
+    margin-top: 50px;
+}
+p {
+    color: #333;
+    text-align: center;
+    margin-top: 50px;
+}
+#cobrarCuenta {
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: blue;
+    color: white;
+    display: inline-block;
+    margin: 0 auto;
+  }
+  
+  img {
+    width: 250px;
+    height: 200px;
+  }
+  
 .container {
     width: 300px;
     margin: 50px auto;

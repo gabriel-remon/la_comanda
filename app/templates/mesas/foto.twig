@@ -1,0 +1,14 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+
+    <h1>cargar nueva mesa</h1>
+    <form id="login-form">
+        <label for="id_comanda">ingrese el id de la comanda:</label>
+        <input type="number" id="id_comanda" name="id_comanda" required>
+        <input type="file" name="imagen_mesa">
+        <button type="submit">Enviar</button>
+        <button type="submit">Ingresar</button>
+    </form>
+     <script src="/public/js/mesas.cargar.js"></script>
+{% endblock %}

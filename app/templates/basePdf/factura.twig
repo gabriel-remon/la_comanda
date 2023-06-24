@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .invoice-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .invoice-details {
+            margin-bottom: 30px;
+        }
+        .invoice-details td {
+            padding: 5px;
+        }
+        .invoice-items {
+            width: 100%;
+        }
+        .invoice-items td, .invoice-items th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .invoice-items th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="invoice-title">Factura del Restaurante</h1>
+
+    <table class="invoice-details">
+        <tr>
+            <td><strong>Nombre del Cliente:</strong> {{ customer_name }}</td>
+            <td><strong>Fecha:</strong> {{ date }}</td>
+        </tr>
+        <tr>
+            <td><strong>Dirección del Cliente:</strong> {{ customer_address }}</td>
+            <td><strong>Número de Factura:</strong> {{ invoice_number }}</td>
+        </tr>
+    </table>
+
+    <table class="invoice-items">
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Total</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.price }}</td>
+            <td>${{ item.total }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3" align="right"><strong>Total:</strong></td>
+            <td><strong>${{ total }}</strong></td>
+        </tr>
+    </table>
+</body>
+</html>

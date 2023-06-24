@@ -1,0 +1,63 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+
+	<h1>Informacion de la mesa</h1>
+	<form id="login-form" idComanda={{ data.id }}>
+		<label>id de la comanda:
+			{{ data.id }}</label>
+		<label>numero de mesa:
+			{{ data.numero_mesa }}</label>
+		<label>nombre cliente:
+			{{ data.nombre_cliente }}</label>
+		<label>estado de la comanda:
+			{{ data.estado }}</label>
+		{% if data.url_foto %}
+        <label>foto de la mesa:</label>
+			<img class='foto' src=/{{data.url_foto}} alt="foto de la mesa con los clientes">
+		{% endif %}
+        {% if cobrar %}
+        <button type="submit">Cobrar cuenta</button>
+	    {% endif %}
+	</form>
+
+
+	<h2>
+		Lista de pedidos</h2>
+
+	<div class="product-list">
+
+		<table class="product-table" id='tabla-pedidos'>
+			<thead>
+				<tr>
+					<th>descripcion producto</th>
+					<th>sector</th>
+					<th>precio</th>
+
+				</tr>
+			</thead>
+			<tbody>
+				{% for element in pedidos %}
+					<tr class="product-row">
+						<td>{{ element.descripcion }}</td>
+						<td>{{ element.sector }}</td>
+						<td>
+							$
+							{{ element.precio }}</td>
+					</tr>
+				{% endfor %}
+				<tr class="product-row">
+					<td></td>
+				</tr>
+				<tr class="product-row">
+					<td>Total a pagar</td>
+					<td></td>
+					<td>
+						${{ data.total }}</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+	<script src="/public/js/mesas.cobrar.js"></script>
+{% endblock %}

@@ -10,6 +10,7 @@ class Mesa
     public $password;
     public $estado;
     public $id_encuesta;
+    public $url_foto;
     public $id;
 
     public function __construct($nombre_cliente, $numero_mesa)
@@ -100,6 +101,7 @@ class Mesa
                 $retorno->estado = $data->estado;
                 $retorno->id_encuesta = $data->id_encuesta;
                 $retorno->id = $data->id;
+                $retorno->url_foto = $data->url_foto;
             }
 
         } else {
@@ -144,6 +146,16 @@ class Mesa
         $consulta->bindValue(':estado', "cancelada");
         return $consulta->execute();
     }
+    public static function cargarFoto($id,$url_foto)
+    {
+        $objAccesoDato = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_MESAS']." 
+                                                    SET url_foto = :url_foto 
+                                                    WHERE id = :id");
+        $consulta->bindValue(':id', $id, PDO::PARAM_INT);
+        $consulta->bindValue(':url_foto', $url_foto);
+        return $consulta->execute();
+    }
 
     public static function validarMesa($numeroMesa, $password)
     {
@@ -154,6 +166,91 @@ class Mesa
             if ($password != $retorno->password) {
                 $retorno = null;
             }
+        }
+
+        return $retorno;
+    }
+    public static function ClienteComiendo($id)
+    {
+        $mesa = Mesa::obtenerMesa($id);
+        $estados = explode(',',$_ENV['ESTADO_MESA']);
+
+        if (isset($mesa) && $mesa->estado == $estados[0]) {
+
+            $objAccesoDato = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDato->prepararConsulta("SELECT COUNT(*) AS cnt 
+                                                        FROM ".$_ENV['BD_PEDIDOS']." 
+                                                        WHERE id_comanda = :id_comanda AND estado != 'entregado'");
+            $consulta->bindValue(':id_comanda', $id, PDO::PARAM_INT);
+            $result =$consulta->execute();
+            if ($result['cnt'] == 0) {
+
+                $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_MESAS']." 
+                SET estado = :estado 
+                WHERE id = :id");
+                $consulta->bindValue(':id', $id, PDO::PARAM_INT);
+                $consulta->bindValue(':estado', $estados[1]);
+                return $consulta->execute();
+            }
+
+        }
+
+        return false;
+    }
+    public static function ListoParaPagar($id)
+    {
+
+        $mesa = Mesa::obtenerMesa($id);
+        $estados = explode(',',$_ENV['ESTADO_MESA']);
+        $retorno = false ;
+
+        if (isset($mesa) && $mesa->estado == $estados[1]) {
+
+            $objAccesoDato = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_MESAS']." 
+                                                    SET estado = :estado 
+                                                    WHERE id = :id");
+            $consulta->bindValue(':id', $id, PDO::PARAM_INT);
+            $consulta->bindValue(':estado', $estados[2]);
+            $retorno =$consulta->execute();
+        }
+
+        return $retorno;
+    }
+    public static function Cobrar($id)
+    {
+
+        $mesa = Mesa::obtenerMesa($id);
+        $estados = explode(',',$_ENV['ESTADO_MESA']);
+        $retorno = false ;
+
+        if (isset($mesa) && $mesa->estado == $estados[2]) {
+
+            $objAccesoDato = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_MESAS']." 
+                                                    SET estado = :estado 
+                                                    WHERE id = :id");
+            $consulta->bindValue(':id', $id, PDO::PARAM_INT);
+            $consulta->bindValue(':estado', $estados[3]);
+            $retorno =$consulta->execute();
+        }
+
+        return $retorno;
+    }
+
+    public static function estado($id)
+    {
+
+
+        $objAccesoDato = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDato->prepararConsulta("SELECT estado from " . $_ENV['BD_MESAS'] . " WHERE id = :id");
+        $consulta->bindValue(':id', $id);
+        $consulta->execute();
+        $retorno = $consulta->fetchObject();
+        if ($retorno == false) {
+            $retorno = null;
+        } else{
+            $retorno = $retorno->estado;
         }
 
         return $retorno;

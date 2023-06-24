@@ -2,11 +2,11 @@
 
 {% block content %}
 
-    <p> Lista de mesas</p>
+    <h1> Lista de mesas</h1>
 
     <div class="product-list">
        
-    <table class="product-table">
+    <table id="tabla-mesas" class="product-table">
         <thead>
             <tr>
                 <th>Nombre cliente</th>
@@ -16,22 +16,24 @@
             </tr>
         </thead>
         <tbody>
-            {% for producto in data %}
-                <tr class="product-row" idProducto={{producto.id}}>
-                    <td>{{ producto.nombre_cliente }}</td>
-                    <td>{{ producto.numero_mesa }}</td>
-                    <td>{{ producto.estado }}</td>
+            {% for comanda in data %}
+                <tr class="product-row" idComanda={{comanda.id}}>
+                    <td>{{ comanda.nombre_cliente }}</td>
+                    <td>{{ comanda.numero_mesa }}</td>
+                    <td>{{ comanda.estado }}</td>
                     <td>
-                        {% if producto.id_encuesta == null %}
+                        {% if comanda.id_encuesta == null %}
                             <span class="product-status">No Realizada</span>
                         {% else %}
                             <span class="product-status available">Realizada</span>
                         {% endif %}
                     </td>
+                    <td><button idComanda={{comanda.id}}>Cargar Foto</button></td>
+                    
                 </tr>
             {% endfor %}
         </tbody>
     </table>
     </div>
-
+    <script src="/public/js/mesas.mostrar.js"></script>
 {% endblock %}

@@ -10,5 +10,40 @@
         <input type="number" id="numero_mesa" name="numero_mesa" required>
         <button type="submit">Ingresar</button>
     </form>
+
+  <p> Lista de Productos</p>
+
+    <div class="product-list">
+       
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>Id del producto</th>
+                <th>Descripción</th>
+                <th>Sector</th>
+                <th>Precio</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in data %}
+                <tr class="product-row" idProducto={{producto.id}}>
+                    <td>{{ producto.id }}</td>
+                    <td>{{ producto.descripcion }}</td>
+                    <td>{{ producto.sector }}</td>
+                    <td>{{ producto.precio }}</td>
+                    <td>
+                        {% if producto.estado == 0 %}
+                            <span class="product-status">No Disponible</span>
+                        {% else %}
+                            <span class="product-status available">Disponible</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
      <script src="/public/js/pedidos.cargar.js"></script>
 {% endblock %}
