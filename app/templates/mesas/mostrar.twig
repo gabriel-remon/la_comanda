@@ -1,0 +1,37 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+
+    <p> Lista de mesas</p>
+
+    <div class="product-list">
+       
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>Nombre cliente</th>
+                <th>numero de mesa</th>
+                <th>Estado</th>
+                <th>Encuesta</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in data %}
+                <tr class="product-row" idProducto={{producto.id}}>
+                    <td>{{ producto.nombre_cliente }}</td>
+                    <td>{{ producto.numero_mesa }}</td>
+                    <td>{{ producto.estado }}</td>
+                    <td>
+                        {% if producto.id_encuesta == null %}
+                            <span class="product-status">No Realizada</span>
+                        {% else %}
+                            <span class="product-status available">Realizada</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+{% endblock %}

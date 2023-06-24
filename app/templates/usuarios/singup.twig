@@ -1,0 +1,33 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+
+	<h1>Registro nuevo empleado</h1>
+	<form id="login-form">
+		<label for="email">Email:</label>
+		<input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+		<input type="password" id="password" name="password" required>
+
+        <label for="nombre">Nombre:</label>
+		<input type="text" id="nombre" name="nombre" required>
+
+        <label for="fecha_nacimiento">Fecha nacimiento:</label>
+		<input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
+
+        <label for="sector">Sector:</label>
+        <select id="sector" name="sector" required>
+			<option value="cocina">cocina</option>
+			<option value="cervezeria">cervezeria</option>
+			<option value="postres">postres</option>
+			<option value="barra">barra</option>
+			<option value="mesero">mesero</option>
+		</select>
+
+        <button type="submit">Ingresar</button>
+
+
+	</form>
+	<script src="/public/js/singup.js"></script>
+{% endblock %}

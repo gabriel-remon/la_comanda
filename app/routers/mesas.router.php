@@ -15,6 +15,7 @@ class routerMesas implements IApiUsable
             $res->getBody()->write('nueva comanda creada, id: ' . $newId . 'password: ' . $new->password);
         } else {
             $res->getBody()->write('no se creo la comanda');
+            $res= $res->withStatus(404);
         }
         return $res;
     }
@@ -45,6 +46,7 @@ class routerMesas implements IApiUsable
         } else {
            $res= $res->withStatus(400) ;
             $res->getBody()->write('usuario o password incorrectos');
+            
         }
         return $res;
     }

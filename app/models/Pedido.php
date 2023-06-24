@@ -167,15 +167,6 @@ class Pedido
         return $retotno ;
     }
 
-    public static function borrarPedido($id)
-    {
-        $objAccesoDato = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_PEDIDOS']." SET estado = :estado WHERE id = :id");
-        $consulta->bindValue(':estado', "anulado");
-        $consulta->bindValue(':id', $id, PDO::PARAM_INT);
-        $consulta->execute();
-    }
-
     public static function cambioEstado($id)
     {
         $proximoEstado = '';
@@ -186,7 +177,6 @@ class Pedido
         if($pedido->estado == 'en preparacion') $proximoEstado = 'listo para servir';
         if($pedido->estado == 'listo para servir') $proximoEstado = 'entregado';
 
-        var_dump($proximoEstado);
         if($proximoEstado == 'listo para servir'){
             $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_PEDIDOS']." 
                                                             SET estado = :estado , orden_entregada = :orden_entregada 
@@ -200,12 +190,13 @@ class Pedido
         $consulta->bindValue(':id', $id, PDO::PARAM_INT);
         $consulta->execute();
     }
-    public static function cargarEmpleado($id,$id_empleado,$tiempo_estimado,$sector)
+
+    public static function cargarEmpleado($id,$tiempo_estimado,$id_empleado,$sector)
     {
         $pedido = Pedido::obtenerPedido($id);
         $producto = Producto::obtenerProducto($pedido->id_producto);
         //var_dump($producto);
-        if($producto && $producto->sector == $sector){
+        if($producto && $producto->sector == $sector && $pedido->estado == 'pendiente'){
             $objAccesoDato = AccesoDatos::obtenerInstancia();
             $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_PEDIDOS']." 
                                                             SET id_empleado = :id_empleado, tiempo_estimado = :tiempo_estimado , estado = :estado 
@@ -219,6 +210,132 @@ class Pedido
             throw new Exception("sector invalido, no coincide con el pedido guardado");
         }
     }
+    // se puede cambiar id_empleado y sector por el jwt guardado
+    public static function pedidoTerminado($id,$id_empleado,$sector,$tiempo_entrega=null)
+    {
+        $pedido = Pedido::obtenerPedido($id);
+        $producto = Producto::obtenerProducto($pedido->id_producto);
+        //var_dump($producto);
+        if($producto && $producto->sector == $sector && $pedido->id_empleado == $id_empleado && $pedido->estado == 'en preparacion'){
+           
+            $objAccesoDato = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_PEDIDOS']." 
+                                                            SET orden_entregada = :orden_entregada , estado = :estado 
+                                                            WHERE id = :id");
+            $consulta->bindValue(':orden_entregada', date(isset($tiempo_entrega)?$tiempo_entrega:"Y-m-d H:i:s"));
+            $consulta->bindValue(':estado', 'listo para servir');
+            $consulta->bindValue(':id', $id, PDO::PARAM_INT);
+            $consulta->execute();
+        }else{
+            throw new Exception("sector invalido, no coincide con el pedido guardado");
+        }
+    }
+    public static function pedidoEntregado($id,$sector)
+    {
+        $pedido = Pedido::obtenerPedido($id);
+        //var_dump($producto);
+        if($pedido && $sector == 'mesero' && $pedido->estado == 'listo para servir'){
+            $objAccesoDato = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_PEDIDOS']." 
+                                                            SET estado = :estado 
+                                                            WHERE id = :id");
+            $consulta->bindValue(':estado', 'entregado');
+            $consulta->bindValue(':id', $id, PDO::PARAM_INT);
+            $consulta->execute();
+        }else{
+            throw new Exception("sector invalido, no coincide con el pedido guardado");
+        }
+    }
+    
+    public static function borrarPedido($id,$sector)
+    {
+        $pedido = Pedido::obtenerPedido($id);
+        //var_dump($producto);
+        if($sector == 'admin'){
+            $objAccesoDato = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDato->prepararConsulta("UPDATE ".$_ENV['BD_PEDIDOS']." SET estado = :estado WHERE id = :id");
+            $consulta->bindValue(':estado', "anulado");
+            $consulta->bindValue(':id', $id, PDO::PARAM_INT);
+            $consulta->execute();
 
+        }else{
+            throw new Exception("Solo los admin pueden borrar un pedido");
+        }
+    }
 
+    public static function pedidosParaServir($id_empleado)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $sector = Usuario::obtenerSector($id_empleado);
+        $data = [];
+        if($sector == 'mesero'){
+            
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT ".$_ENV['BD_PEDIDOS'].".*, ".$_ENV['BD_PRODUCTOS'].".sector, ".$_ENV['BD_PRODUCTOS'].".descripcion, ".$_ENV['BD_MESAS'].".numero_mesa
+    FROM ".$_ENV['BD_PEDIDOS']."
+    JOIN ".$_ENV['BD_PRODUCTOS']." ON ".$_ENV['BD_PEDIDOS'].".id_producto = ".$_ENV['BD_PRODUCTOS'].".id
+    JOIN ".$_ENV['BD_MESAS']." ON ".$_ENV['BD_PEDIDOS'].".id_comanda = ".$_ENV['BD_MESAS'].".id
+    WHERE ".$_ENV['BD_PEDIDOS'].".estado = :estado");
+
+            //$consulta->bindValue(':sector', $sector);
+            $consulta->bindValue(':estado', 'listo para servir');
+            $consulta->execute();
+            $data = $consulta->fetchAll(PDO::FETCH_CLASS);
+
+        }
+        return $data;
+    }
+    /**
+     * obtiene todos los pedids de la cocina osea de cocina,bares,tragos,
+     *
+     * @param [type] $id_empleado
+     * @return void
+     */
+    public static function pedidosEnPreparacion($id_empleado)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $sector = Usuario::obtenerSector($id_empleado);
+        $data = [];
+
+        if($sector == 'cocina' || $sector == 'cervezeria' || $sector == 'postres' || $sector == 'barra' ){
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.*,".$_ENV['BD_PRODUCTOS'].".sector,".$_ENV['BD_PRODUCTOS'].".descripcion FROM ".$_ENV['BD_PEDIDOS'].
+            " JOIN ".$_ENV['BD_PRODUCTOS']." ON ".$_ENV['BD_PEDIDOS'].".id_producto = ".$_ENV['BD_PRODUCTOS'].".id 
+            WHERE ".$_ENV['BD_PRODUCTOS'].".sector = :sector AND (".$_ENV['BD_PEDIDOS'].".estado = :estado1 OR ".$_ENV['BD_PEDIDOS'].".estado = :estado2)");
+            
+            $consulta->bindValue(':sector', $sector);
+            $consulta->bindValue(':estado1', 'pendiente');
+            $consulta->bindValue(':estado2', 'en preparacion');
+            $consulta->execute();
+            $data = $consulta->fetchAll();
+        }
+        return   $data;
+    }
+
+    public static function pedidosAdmin($id_empleado)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $sector = Usuario::obtenerSector($id_empleado);
+        $data = [];
+        if($sector == 'admin'){
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.*,".$_ENV['BD_PRODUCTOS'].".sector,".$_ENV['BD_PRODUCTOS'].".descripcion FROM ".$_ENV['BD_PEDIDOS'].
+            " JOIN ".$_ENV['BD_PRODUCTOS']." ON ".$_ENV['BD_PEDIDOS'].".id_producto = ".$_ENV['BD_PRODUCTOS'].".id");
+            $consulta->execute();
+            $data = $consulta->fetchAll();
+        }
+        return $data;
+    }
+    public static function pedidosCliente($id_comanda,$sector)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $data = [];
+        if($sector == 'cliente'){
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.*,".$_ENV['BD_PRODUCTOS'].".sector,".$_ENV['BD_PRODUCTOS'].".descripcion FROM ".$_ENV['BD_PEDIDOS'].
+            " JOIN ".$_ENV['BD_PRODUCTOS']." ON ".$_ENV['BD_PEDIDOS'].".id_producto = ".$_ENV['BD_PRODUCTOS'].".id
+            WHERE ".$_ENV['BD_PEDIDOS'].".id_comanda = :id_comanda
+            ");
+            $consulta->bindValue(':id_comanda', $id_comanda);
+            $consulta->execute();
+            $data = $consulta->fetchAll();
+        }
+        return $data;
+    }
 }

@@ -1,0 +1,14 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+
+    <h1>cargar nuevo pedido</h1>
+    <form id="login-form">
+        <label for="id_producto">Id del producto:</label>
+        <input type="number" id="id_producto" name="id_producto" required>
+        <label for="numero_mesa">Numero de mesa:</label>
+        <input type="number" id="numero_mesa" name="numero_mesa" required>
+        <button type="submit">Ingresar</button>
+    </form>
+     <script src="/public/js/pedidos.cargar.js"></script>
+{% endblock %}

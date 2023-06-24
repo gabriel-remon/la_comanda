@@ -18,8 +18,10 @@ class routerUsuarios implements IApiUsable
         $newId = $new->crearUsuario();
         if(isset($newId)){
             $res->getBody()->write('nuevo usuario creado, id: '.$newId);
+            $res= $res->withStatus(200);
         }else{
             $res->getBody()->write('no se pudo crear el usuario');
+            $res = $res->withStatus(404);
         }
         return $res;
     }

@@ -10,6 +10,9 @@
         <thead>
             <tr>
                 <th>id Comanda</th>
+                {% if data[0].numero_mesa is defined %}
+                    <th>Numero de mesa</th>
+                {% endif %}
                 <th>descripcion producto</th>
                 <th>sector</th>
                 <th>tiempo estimado</th>
@@ -23,6 +26,9 @@
             {% for element in data %}
                 <tr class="product-row" idelement={{element.id}}>
                     <td>{{ element.id_comanda }}</td>
+                    {% if element.numero_mesa is defined %}
+                            <td>{{ element.numero_mesa }}</td>
+                    {% endif %}
                     <td>{{ element.descripcion }}</td>
                     <td>{{ element.sector }}</td>
                     <td>{{ element.tiempo_estimado }}</td>
@@ -36,13 +42,16 @@
                             <span class="product-status available">{{ element.estado }}</span>
                         {% endif %}
                     </td>
-                    <td><button id='tomar' idPedido={{element.id}}>tomar pedido</button></td>
-                    <td><button id='entregar' idPedido={{element.id}}>entregar pedido</button></td>
+                     {% if sector != 'cliente' %}
+                            
+                        <td><button id='tomar' idPedido={{element.id}}>tomar pedido</button></td>
+                        <td><button id='entregar' idPedido={{element.id}}>entregar pedido</button></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
     </table>
     </div>
- <script src="/public/js/pedidos.js"></script>
+ <script src="/public/js/pedidos.mostrar.js"></script>
 
 {% endblock %}

@@ -43,6 +43,10 @@ class indexRouter{
         $group->get('/logout', \ViewRouter::class . ':logout');
         $group->post('/logout', \routerUsuarios::class . ':logout');
         
+        $group->get('/singup', \ViewRouter::class . ':singup')
+        ->add(\Logger::validarRoles(['admin']))
+        ->add(\Logger::class.':validarJWTUsuario');
+
         $group->post('/singup', \routerUsuarios::class . ':CargarUno')
         ->add(\validarFormato::class . ':usuario')
         ->add(\validarFormato::class . ':sector')
@@ -83,13 +87,26 @@ class indexRouter{
     });
 
     $app->group('/mesas', function ($group) {
+        $group->get('/cargar', \ViewRouter::class . ':cargarMesa')
+        ->add(\Logger::validarRoles(['admin','mesero']))
+        ->add(\Logger::class.':validarJWTUsuario');
         
-        $group->get('[/]', \routerMesas::class . ':TraerTodos');
+        $group->get('/cobrar/{id}', \ViewRouter::class . ':cobrar')
+        ->add(\Logger::validarRoles(['admin']))
+        ->add(\Logger::class.':validarJWTUsuario');
+
+        $group->get('[/]', \routerMesas::class . ':TraerTodos')
+        ->add(\ViewRouter::class . ':mesas')
+        ->add(\Logger::validarRoles(['admin','mesero']))
+        ->add(\Logger::class.':validarJWTUsuario');
         
         $group->get('/{id}', \routerMesas::class . ':TraerUno');
         
-        $group->post('[/]', \routerMesas::class . ':CargarUno')
-        ->add(\validarFormato::class . ':mesa');
+        $group->post('/cargar', \routerMesas::class . ':CargarUno')
+        ->add(\validarFormato::class . ':mesa')
+        ->add(\Logger::validarRoles(['admin','mesero']))
+        ->add(\Logger::class.':validarJWTUsuario');
+
         $group->put('/{id}', \routerMesas::class . ':ModificarUno')
         ->add(\validarFormato::class . ':mesa')
         ->add(\Logger::validarRoles(['admin','mesero']))
@@ -98,9 +115,16 @@ class indexRouter{
         $group->delete('/{id}', \routerMesas::class . ':BorrarUno')
         ->add(\Logger::validarRoles(['admin','mesero']))
         ->add(\Logger::class.':validarJWTUsuario');
+
+        $group->post('/cobrar/{id}', \routerMesas::class . ':Cobrar')
+        ->add(\Logger::validarRoles(['admin']))
+        ->add(\Logger::class.':validarJWTUsuario');
     });
 
     $app->group('/pedidos', function ($group){
+        $group->get('/cargarPedido', \ViewRouter::class . ':CargarPedido')
+        ->add(\Logger::validarRoles(['admin','mesero']))
+        ->add(\Logger::class.':validarJWTUsuario');
         $group->get('[/]', \routerPedidos::class . ':TraerTodos')
         ->add(\ViewRouter::class.':pedidos')
         ->add(\Logger::class.':validarJWTUsuario');
@@ -109,8 +133,12 @@ class indexRouter{
 
         $group->get('/{id}', \routerPedidos::class . ':TraerUno');
         
-        $group->post('[/]', \routerPedidos::class . ':CargarUno')
-        ->add(\validarFormato::class . ':altaPedido');
+        
+    
+        $group->post('/cargarPedido', \routerPedidos::class . ':CargarUno')
+        ->add(\validarFormato::class . ':altaPedido')
+        ->add(\Logger::validarRoles(['admin','mesero']))
+        ->add(\Logger::class.':validarJWTUsuario');
         
         $group->put('/{id}', \routerPedidos::class . ':ModificarUno')
         ->add(\validarFormato::class . ':pedido');

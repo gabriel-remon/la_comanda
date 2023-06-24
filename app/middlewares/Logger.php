@@ -89,7 +89,7 @@ class Logger
     
         if(isset($error)){
             $view = $request->getAttribute('view');
-            $response->getBody()->write($view->render('error.twig',['data'=>$error]));
+            $response->getBody()->write($view->render('error/token.twig',['data'=>$error]));
             $response->withStatus($statusError);
         }
 
@@ -188,7 +188,7 @@ class Logger
 
             if(isset($error)){
                 $view = $request->getAttribute('view');
-                $response->getBody()->write($view->render('error.twig',['data'=>$error]));
+                $response->getBody()->write($view->render('error/token.twig',['data'=>$error]));
                 $response->withStatus($statusError);
             }else{
                 $response = $handler->handle($request);

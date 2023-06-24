@@ -17,7 +17,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
                 'success'
             )
             .then(function() {
-               // window.location.href = '/productos';
+                window.location.href = '/pedidos';
             });
         } else {
             Swal.fire(

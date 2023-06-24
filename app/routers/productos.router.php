@@ -35,7 +35,7 @@ class routerProductos implements IApiUsable
         $productos = Producto::obtenerTodos();
         
         //$res->getBody()->write(json_encode($productos));
-        $res->getBody()->write($view->render('productos.twig',['data'=>$productos]));
+        $res->getBody()->write($view->render('productos/mostrar.twig',['data'=>$productos]));
         
         return $res;
     }
@@ -83,7 +83,7 @@ class routerProductos implements IApiUsable
                 break;
             
         }
-        $res->withStatus($code);
+        $res= $res->withStatus($code);
         $res->getBody()->write($body);
         return $res;
     }

@@ -17,11 +17,11 @@ class validarFormato
                 $res = $handler->handle($newReq);
             } else {
                 $res->getBody()->write('el sector ingresado no es valido');
-                $res->statusCode = 404;
+                 $res= $res->withStatus(404);
             }
         } else {
             $res->getBody()->write('no se encontro el parametro sector en el body');
-            $res->statusCode = 404;
+             $res= $res->withStatus(404);
         }
 
         return $res;
@@ -39,7 +39,7 @@ class validarFormato
             $res = $handler->handle($req);
         } else {
             $res->getBody()->write('no se encontraron los parametros');
-            $res->statusCode = 404;
+             $res= $res->withStatus(404);
         }
         return $res;
     }
@@ -48,6 +48,9 @@ class validarFormato
 
         $res = new ResponseMW();
         $body = $req->getParsedBody();
+        if(!isset($body['estado']) || !($body['estado'] === true || $body['estado'] === false)) $body['estado'] = true;
+        
+        
 
         if (
             isset($body['email']) &&
@@ -57,10 +60,17 @@ class validarFormato
             isset($body['sector']) &&
             isset($body['estado'])
         ) {
-            $res = $handler->handle($req);
+            if($body['sector'] == 'admin'){
+
+                $res->getBody()->write('No tiene permisos para crear un nuevo admin');
+                 $res= $res->withStatus(404);
+            }else{
+
+                $res = $handler->handle($req);
+            }
         } else {
             $res->getBody()->write('no se encontraron los parametros');
-            $res->statusCode = 404;
+             $res= $res->withStatus(404);
         }
         return $res;
     }
@@ -80,11 +90,11 @@ class validarFormato
                 $res = $handler->handle($req);
             } else {
                 $res->getBody()->write('numero de mesa invalido');
-                $res->statusCode = 404;
+                 $res= $res->withStatus(404);
             }
         } else {
             $res->getBody()->write('no se encontraron los parametros');
-            $res->statusCode = 404;
+             $res= $res->withStatus(404);
         }
         return $res;
     }
@@ -101,16 +111,16 @@ class validarFormato
                 if(isset($body['id_producto']) && Producto::exist($body['id_producto'])){
                     $res = $handler->handle($req);
                 }else{
-                    $res->statusCode =404;
+                     $res= $res->withStatus(404);
                     $res->getBody()->write('el producto no existe');
                     return $res;
                 }
             }else{
-                $res->statusCode =404;
+                 $res= $res->withStatus(404);
                 $res->getBody()->write('La mesa ingresada no se encuentra con una comanda activa');
             }
         }else{
-            $res->statusCode = 404;
+             $res= $res->withStatus(404);
             $res->getBody()->write('no se encontro el numero de mesa como parametro "numero_mesa"');
         }
 
@@ -126,7 +136,7 @@ class validarFormato
             $error = 'No se encontro el parametro "id_pedido"';
             $statusError = 404;
             $res->getBody()->write($error);
-            $res->withStatus($statusError);
+             $res= $res->withStatus($statusError);
             return $res;
         }
 
@@ -136,7 +146,7 @@ class validarFormato
             $error = 'El pedido no esta guardado en la lista de pedidos';
             $statusError = 500;
             $res->getBody()->write($error);
-            $res->withStatus($statusError);
+             $res= $res->withStatus($statusError);
             return $res;
         }
 
@@ -144,7 +154,7 @@ class validarFormato
             $error = 'No se encontro el parametro "tiempo_estimado"';
             $statusError = 404;
             $res->getBody()->write($error);
-            $res->withStatus($statusError);
+             $res= $res->withStatus($statusError);
             return $res;
         }
         

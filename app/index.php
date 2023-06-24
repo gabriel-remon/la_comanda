@@ -38,7 +38,8 @@ $app->addBodyParsingMiddleware();
 
 //motor de plantillas  twig
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__.'/templates');
-$twig = new \Twig\Environment($loader);
+$twig = new \Twig\Environment($loader, ['debug'=>true]);
+$twig->addExtension(new Twig\Extension\DebugExtension());
 
 //agrego la clase de twig a todas las request como atributo 'view'
 $app->add(function ($request, $handler) use ($twig) {

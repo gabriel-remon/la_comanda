@@ -199,4 +199,20 @@ class Usuario
 
         return $retorno;
     }
+
+    public static function obtenerSector($id)
+    {
+
+
+        $objAccesoDato = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDato->prepararConsulta("SELECT sector from " . $_ENV['BD_USUARIOS'] . " WHERE id = :id");
+        $consulta->bindValue(':id', $id);
+        $consulta->execute();
+        $retorno = $consulta->fetchObject();
+        if ($retorno !== false) {
+            $retorno = $retorno->sector;
+        } 
+
+        return $retorno;
+    }
 }

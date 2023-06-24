@@ -1,5 +1,5 @@
 
-document.getElementsByTagName('form').addEventListener('submit', function(event) {
+document.getElementById('login-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
     var formData = new FormData(this);
@@ -16,8 +16,7 @@ document.getElementsByTagName('form').addEventListener('submit', function(event)
                 'success'
             )
             .then(function() {
-                
-                //window.location.href = '/productos';
+                window.location.href = '/productos';
             });
         } else {
             Swal.fire(
