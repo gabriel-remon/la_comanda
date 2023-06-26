@@ -82,7 +82,8 @@ class Mesa
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         if ($opcion) {
-            $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM ".$_ENV['BD_MESAS']." WHERE numero_mesa = :numero_mesa AND estado <> :estado");
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM ".$_ENV['BD_MESAS']." 
+                                                            WHERE numero_mesa = :numero_mesa AND estado <> :estado");
             $consulta->bindValue(':numero_mesa', $buscardor);
             $consulta->bindValue(':estado', "cerrada");
         } else {

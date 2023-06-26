@@ -117,11 +117,36 @@ class Usuario
 
             if (!password_verify($password, $retorno->password)) {
                 $retorno = null;
+            }else{
+                Usuario::darAsistencia($retorno->id);
             }
         }
 
         return $retorno;
     }
+
+
+    public static function darAsistencia($id){
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $query="INSERT INTO asistencia (id_empleado, fecha_entrada)
+        SELECT :id_empleado, :fecha_entrada
+        FROM DUAL
+        WHERE NOT EXISTS 
+        ( SELECT 1 FROM asistencia 
+         WHERE id_empleado = :id_empleado_aux
+         AND DATE(fecha_entrada) = DATE(:fecha_entrada_aux))";
+
+        
+        $consulta = $objAccesoDatos->prepararConsulta($query);
+        $consulta->bindValue(':id_empleado', $id,PDO::PARAM_INT);
+        $consulta->bindValue(':id_empleado_aux', $id,PDO::PARAM_INT);
+        $consulta->bindValue(':fecha_entrada', date("Y-m-d H:i:s"));
+        $consulta->bindValue(':fecha_entrada_aux', date("Y-m-d H:i:s"));
+        //$consulta->execute();
+        $consulta->execute();
+        
+    }
+
 
     public static function modificarUsuario($newUser)
     {
@@ -202,8 +227,6 @@ class Usuario
 
     public static function obtenerSector($id)
     {
-
-
         $objAccesoDato = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDato->prepararConsulta("SELECT sector from " . $_ENV['BD_USUARIOS'] . " WHERE id = :id");
         $consulta->bindValue(':id', $id);

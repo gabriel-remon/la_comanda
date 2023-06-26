@@ -4,7 +4,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
 
     var formData = new FormData(this);
 
-    fetch('/usuarios/login/clientes', {
+    fetch('/api/usuarios/login/clientes', {
         method: 'POST',
         body: formData
     })

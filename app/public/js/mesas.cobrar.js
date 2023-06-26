@@ -4,7 +4,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
 
     idComanda = this.getAttribute('idComanda')
 
-    fetch('/mesas/cobrar/'+idComanda, {
+    fetch('/api/mesas/cobrar/'+idComanda, {
         method: 'POST',
     })
     .then(function(response) {

@@ -47,6 +47,9 @@ $app->add(function ($request, $handler) use ($twig) {
     $response = $handler->handle($request);
     return $response;
 });
+
+
+
 // Routes
 $app->group('', \indexRouter::class );
 

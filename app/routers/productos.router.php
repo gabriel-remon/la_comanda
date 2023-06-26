@@ -29,13 +29,13 @@ class routerProductos implements IApiUsable
 
     public function TraerTodos($req, $res, $args)
     {
-        $view = $req->getAttribute('view');
+        //$view = $req->getAttribute('view');
         //var_dump($view->render('hija.twig'));
         //return $res;
         $productos = Producto::obtenerTodos();
         
         //$res->getBody()->write(json_encode($productos));
-        $res->getBody()->write($view->render('productos/mostrar.twig',['data'=>$productos]));
+        $res->getBody()->write(json_encode($productos));
         
         return $res;
     }

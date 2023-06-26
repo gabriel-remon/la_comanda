@@ -71,7 +71,7 @@ document.getElementById('tabla-mesas').addEventListener('click', function(e) {
               formData.append('imagen_mesa', foto);
               formData.append('idComanda', idComanda);
 
-              fetch(`/mesas/cargarfoto`, {
+              fetch(`/api/mesas/cargarfoto`, {
                 method: 'POST',
                 body: formData
             })

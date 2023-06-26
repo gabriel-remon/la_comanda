@@ -18,7 +18,7 @@ document.getElementById('tabla-pedidos').addEventListener('click', function (e) 
             showCancelButton: true,
             inputValidator: (value) => {
 
-                fetch('/pedidos/preparar', {
+                fetch('/api/pedidos/preparar', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -52,7 +52,7 @@ document.getElementById('tabla-pedidos').addEventListener('click', function (e) 
 
 
     if (e.target.textContent == 'entregar pedido') {
-        fetch('/pedidos/preparar', {
+        fetch('/api/pedidos/preparar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

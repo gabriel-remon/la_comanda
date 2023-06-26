@@ -12,7 +12,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
         
         
     }else{
-        fetch('/usuarios/logout', {
+        fetch('/api/usuarios/logout', {
             method: 'POST'
         })
         .then(function(response) {

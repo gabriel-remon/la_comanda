@@ -64,6 +64,7 @@ class Logger
 
         $cookies = $request->getCookieParams();
         $token = $cookies['jwt'] ?? null;
+
         $error = null;
         $statusError = 500;
         $response = new ResponseMW();
@@ -78,7 +79,6 @@ class Logger
 
         //list($token) = sscanf($authHeader, 'Bearer %s');
         try {
-            
             $tokenVerificado =  ControlerJWT::VerificarToken($token);
             $request = $request->withAttribute('jwt', $tokenVerificado);
             $response = $handler->handle($request);

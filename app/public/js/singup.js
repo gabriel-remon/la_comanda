@@ -5,7 +5,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
 
     var formData = new FormData(this);
 
-    fetch('/usuarios/singup', {
+    fetch('/api/usuarios/singup', {
         method: 'POST',
         body: formData
     })

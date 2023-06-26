@@ -101,6 +101,23 @@ class ViewRouter
         }
         return $res;
     }
+    public function mostrarProductos($req, $handler)
+    {
+        $res = $handler->handle($req);
+        if ($res->getStatusCode() == 200) {
+            $view = $req->getAttribute('view');
+            $body = $res->getBody();
+            $productos = json_decode((string)$body, true);
+            // Eliminar el body actual
+            $body->rewind();
+            $body->write('');
+            
+            $res->getBody()->write($view->render('productos/mostrar.twig',['data'=>$productos]));
+        
+            //$res->getBody()->write($view->render('usuarios/mostrar.todos.twig', ['data' => $usuarios]));
+        }
+        return $res;
+    }
 
     public function mesas($req, $handler)
     {
