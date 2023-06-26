@@ -24,7 +24,7 @@ require_once __DIR__.'/utils/jwtController.php';
 require_once __DIR__."/routers/index.router.php";
 
 // Load ENV
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__."/../");
 $dotenv->safeLoad();
 
 // Instantiate App
