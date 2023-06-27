@@ -5,20 +5,11 @@ use Slim\Handlers\Strategies\RequestHandler;
 error_reporting(-1);
 ini_set('display_errors', 1);
 
-//use Psr\Http\Message\ResponseInterface as Response;
-//use Slim\Psr7\Response as ResponseMW;
-//use Psr\Http\Message\ServerRequestInterface as Request;
-//use Psr\Http\Server\RequestHandlerInterface;
+
 use Slim\Factory\AppFactory;
-//use Slim\Routing\RouteCollectorProxy;
-//use Slim\Routing\RouteContext;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-//require_once './utils/AccesoDatos.php';
-//require_once './middlewares/Logger.php';
-
-//require_once './controllers/UsuarioController.php';
 require_once __DIR__.'/utils/jwtController.php';
 
 require_once __DIR__."/routers/index.router.php";

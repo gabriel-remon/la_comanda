@@ -1622,6 +1622,59 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "cargar-tabla-csv",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "csv",
+							"type": "file",
+							"src": "/C:/Users/gabriel/Desktop/estudio/facultad/programacion 3 2023/claseJWT/descripcionApp/BD/producto.csv"
+						},
+						{
+							"key": "bd",
+							"value": "producto",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": "localhost:2020/api/bd/cargar/producto"
+			},
+			"response": []
+		},
+		{
+			"name": "descargar-tabla-csv",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "csv",
+							"type": "file",
+							"src": "/C:/Users/gabriel/Desktop/estudio/facultad/programacion 3 2023/claseJWT/descripcionApp/BD/producto.csv"
+						},
+						{
+							"key": "bd",
+							"value": "producto",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": "localhost:2020/api/bd/descargar/producto"
+			},
+			"response": []
 		}
 	]
 }

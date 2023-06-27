@@ -4,7 +4,6 @@ class csvControler
 
     public static function descargarcsv($req, $res, $args)
     {
-
         $tabla = $args['baseDatos'];
         if (
             $tabla == $_ENV['BD_USUARIOS'] ||
@@ -33,7 +32,7 @@ class csvControler
 
             $res->getBody()->write($contenidoCSV);
         } else {
-            $res->getBody()->write('no se pudo realizar la descarga');
+            $res->getBody()->write('no se pudo realizar la descarga, base de datos no encontrada');
             $res = $res->withStatus(500);
         }
         return $res;
