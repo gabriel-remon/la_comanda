@@ -26,27 +26,36 @@ class routerMesas implements IApiUsable
         $statusCode = 500;
         try {
             $body = $req->getParsedBody();
-            $foto = $req->getUploadedFiles()['imagen_mesa'];
-
-            if ($foto->getError() === UPLOAD_ERR_OK &&  isset($body['idComanda'])) {
-                $directorioDestino = 'public/imagenes/' . $body['idComanda'] . '.jpg';
-                $foto->moveTo(__DIR__.'/../'.$directorioDestino);
-
-                if (Mesa::cargarFoto($body['idComanda'], $directorioDestino)) {
-                    $mesage = 'foto guardada';
-                    $statusCode = 200;
+            $foto = $req->getUploadedFiles();
+            if(isset($foto['imagen_mesa'])){
+                $foto= $req->getUploadedFiles()['imagen_mesa'];
+            
+                if ($foto?->getError() === UPLOAD_ERR_OK &&  isset($body['idComanda'])) {
+                    $directorioDestino = 'public/imagenes/' . $body['idComanda'] . '.jpg';
+                    $foto->moveTo(__DIR__.'/../'.$directorioDestino);
+    
+                    if (Mesa::cargarFoto($body['idComanda'], $directorioDestino)) {
+                        $mesage = 'foto guardada';
+                        $statusCode = 200;
+                    } else {
+                        $mesage = 'error al guardar la foto';
+                        $statusCode = 500;
+                    }
                 } else {
-                    $mesage = 'error al guardar la foto';
-                    $statusCode = 500;
+                    $mesage = 'error al enviar la foto, posiblemente no existe idComanda';
+                    $statusCode = 404;
                 }
-            } else {
-                $mesage = 'error al enviar la foto';
+            }else{
+                $mesage = 'no existe el parametro imagen_mesa';
                 $statusCode = 404;
+                
             }
-        } catch (Exception $e) {
-            $mesage = $e->getMessage();
-            $statusCode = 500;
-        }
+            } catch (Exception $e) {
+                $mesage = $e->getMessage();
+                $statusCode = 500;
+            }
+            
+
         $res->getBody()->write($mesage);
         $res = $res->withStatus($statusCode);
 

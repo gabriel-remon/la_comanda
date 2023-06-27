@@ -74,6 +74,27 @@ class validarFormato
         }
         return $res;
     }
+    public static function baseDatos($req, $handler)
+    {
+
+        $res = new ResponseMW();
+        $body = $req->getParsedBody();
+        if (
+            isset($body['bd']) && (
+                $body['bd'] == $_ENV['BD_USUARIOS'] ||
+                $body['bd'] == $_ENV['BD_PRODUCTOS'] ||
+                $body['bd'] == $_ENV['BD_PEDIDOS'] ||
+                $body['bd'] == $_ENV['BD_MESAS'] ||
+                $body['bd'] == $_ENV['BD_ASISTENCIA'] 
+             ))
+         {
+                $res = $handler->handle($req);
+        } else {
+            $res->getBody()->write('los parametros son incorrectos');
+             $res= $res->withStatus(404);
+        }
+        return $res;
+    }
 
 
     public static function mesa($req, $handler)

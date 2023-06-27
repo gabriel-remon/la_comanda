@@ -13,32 +13,6 @@ class Usuario
     public $sector;
     public $estado;
 
-    /*
-    public function __construct($usuario=null, $clave=null,$id=null){
-        $this->usuario = $usuario;
-        $this->clave = $clave;
-        $this->id = $id;
-    }
-    */
-
-    public function setEmail($email)
-    {
-    }
-    public function setNombre($email)
-    {
-    }
-    public function setContraseña($email)
-    {
-    }
-    public function setfechaNacimiento($email)
-    {
-    }
-    public function setSector($email)
-    {
-    }
-    public function setEstado($email)
-    {
-    }
 
 
     public function crearUsuario()

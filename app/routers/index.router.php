@@ -10,6 +10,7 @@ include_once __DIR__ . '/../models/Producto.php';
 include_once __DIR__ . '/../middlewares/validarFormato.php';
 include_once __DIR__ . '/../middlewares/Logger.php';
 
+include_once __DIR__ . '/../utils/csvControler.php';
 class indexRouter
 {
     function __invoke($app)
@@ -19,6 +20,14 @@ class indexRouter
          * funcionalidad de la api rest 
          */
         $app->group('/api', function ($group) {
+
+            $group->group('/bd', function ($group) {
+                $group->post('/cargar/{baseDatos}', \csvControler::class . ':cargarcsv');
+                $group->get('/descargar/{baseDatos}', \csvControler::class . ':descargarcsv');
+            })
+                //->add(\validarFormato::class . ':baseDatos')
+                ->add(\Logger::validarRoles(['admin']))
+                ->add(\Logger::class . ':validarJWTUsuario');
 
             $group->group('/usuarios', function ($group) {
 
@@ -73,7 +82,12 @@ class indexRouter
             });
 
             $group->group('/mesas', function ($group) {
+                $group->get('[/]', \routerMesas::class . ':TraerTodos')
+                    ->add(\Logger::validarRoles(['admin', 'mesero']))
+                    ->add(\Logger::class . ':validarJWTUsuario');
 
+                $group->get('/{id}', \routerMesas::class . ':TraerUno')
+                    ->add(\Logger::class . ':validarJWTUsuario');
 
                 $group->post('/listoParaPagar/{id}', \routerMesas::class . ':listoParaPagar')
                     ->add(\Logger::validarRoles(['admin', 'mesero']));
@@ -99,7 +113,7 @@ class indexRouter
 
             $group->group('/pedidos', function ($group) {
 
-                $group->post('/', \routerPedidos::class . ':TraerTodos');
+                $group->post('[/]', \routerPedidos::class . ':TraerTodos');
 
                 $group->get('/{id}', \routerPedidos::class . ':TraerUno');
 
@@ -108,7 +122,7 @@ class indexRouter
                     ->add(\Logger::validarRoles(['admin', 'mesero']));
 
                 $group->put('/{id}', \routerPedidos::class . ':ModificarUno')
-                    ->add(\validarFormato::class . ':pedido')
+                    //->add(\validarFormato::class . ':altaPedido')
                     ->add(\Logger::validarRoles(['admin']));
 
                 $group->delete('/{id}', \routerPedidos::class . ':BorrarUno')

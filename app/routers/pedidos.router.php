@@ -80,8 +80,7 @@ class routerPedidos implements IApiUsable
         $new->id_empleado = isset($body['id_empleado']) ? $body['id_empleado'] : null;
         $new->orden_entregada = isset($body['orden_entregada']) ? $body['orden_entregada'] : null;
         $new->id = $args['id'];
-
-        $newId = Mesa::modificartMesa($new);
+        $newId = Pedido::modificarPedido($new);
         $res->getBody()->write('mesa modificado con exito id: ' . $newId);
         return $res;
     }
@@ -90,7 +89,7 @@ class routerPedidos implements IApiUsable
     {
 
         $idProduct = Mesa::borrarMesa($args['id']);
-        $res->getBody()->write('mesa eliminado con exito id: ' . $idProduct);
+        $res->getBody()->write('pedido eliminado con exito id: ' . $idProduct);
         return $res;
     }
     public function preparar($req, $res, $args)

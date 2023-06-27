@@ -11,25 +11,6 @@ class Producto
     public $precio;
     public $estado;
 
-    /*
-    public function __construct($usuario=null, $clave=null,$id=null){
-        $this->usuario = $usuario;
-        $this->clave = $clave;
-        $this->id = $id;
-    }
-    */
-
-    public function setDescripcion($email)
-    {
-    }
-    public function setSector($email)
-    {
-    }
-    public function setEstado($email)
-    {
-    }
-
-
     public function crearProducto()
     {
 
