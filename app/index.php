@@ -40,8 +40,20 @@ $app->add(function ($request, $handler) use ($twig) {
 });
 
 
+  
+  
+
 
 // Routes
-$app->group('', \indexRouter::class );
+$app->group('', \indexRouter::class )->add(function ($request, $handler) {
+    $uri = $request->getUri();
+    if ($uri->getScheme() !== 'https') {
+      $uri = $uri->withScheme('https');
+      return (new Slim\Psr7\Response())
+        ->withStatus(301)
+        ->withHeader('Location', (string)$uri);
+    }
+    return $handler->handle($request);
+  });
 
 $app->run();

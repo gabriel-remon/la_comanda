@@ -40,7 +40,16 @@ class routerUsuarios implements IApiUsable
                 'email' => $usuario->email
             ];
             $jwt = ControlerJWT::CrearToken($token);
-            $res = $res->withHeader('Set-Cookie', 'jwt=' . $jwt . '; path=/; HttpOnly; Secure; SameSite=Strict');
+            setcookie('jwt', $jwt, [
+                'expires' => time() + 86400,
+                'path' => '/',
+                'domain' => $_SERVER['HTTP_HOST'],
+                'secure' => true, // asegura que las cookies sean enviadas solo sobre HTTPS
+                'httponly' => true, // las cookies solo se pueden acceder a través del protocolo HTTP, y no mediante scripts como JavaScript
+                'samesite' => 'Strict', // previene ataques de tipo CSRF
+              ]);
+            
+           // $res = $res->withHeader('Set-Cookie', 'jwt=' . $jwt . '; path=/; HttpOnly; Secure; SameSite=Strict');
             $res->getBody()->write("Bienvenido " . $usuario->nombre);
             $res = $res->withStatus(200);
         } else {
