@@ -48,6 +48,7 @@ class routerUsuarios implements IApiUsable
                 'httponly' => true, // las cookies solo se pueden acceder a través del protocolo HTTP, y no mediante scripts como JavaScript
                 'samesite' => 'Strict', // previene ataques de tipo CSRF
               ]);
+              
             
            // $res = $res->withHeader('Set-Cookie', 'jwt=' . $jwt . '; path=/; HttpOnly; Secure; SameSite=Strict');
             $res->getBody()->write("Bienvenido " . $usuario->nombre);
