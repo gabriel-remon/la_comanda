@@ -45,7 +45,8 @@ $app->add(function ($request, $handler) use ($twig) {
 
 
 // Routes
-$app->group('', \indexRouter::class )->add(function ($request, $handler) {
+$app->group('', \indexRouter::class );
+/*->add(function ($request, $handler) {
     $uri = $request->getUri();
     if ($uri->getScheme() !== 'https') {
       $uri = $uri->withScheme('https');
@@ -55,5 +56,5 @@ $app->group('', \indexRouter::class )->add(function ($request, $handler) {
     }
     return $handler->handle($request);
   });
-
+*/
 $app->run();
